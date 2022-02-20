@@ -1,0 +1,152 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[slovene]{babel}
+
+\usepackage{amsthm}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{relsize}
+\usepackage{mathrsfs}
+\usepackage{bbm}
+\usepackage{xcolor}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\renewcommand{\P}{\mathbb{P}}
+\newcommand{\E}{\mathbb{E}}
+\renewcommand{\c}{\mathsf{c}}
+\newcommand{\set}[1]{\{#1\}}
+\newcommand{\oklepaj}[1]{\left(#1\right)}
+\newcommand{\1}{\mathbbm{1}}
+\newcommand{\rr}{[-\infty,\infty]}
+\newcommand{\ra}{\rightarrow}
+\newcommand{\5}{\vspace{0.5cm}}
+\renewcommand{\t}{{t \geq 0}}
+\newcommand{\vp}{(\Omega, \F, \P)}
+\newcommand{\fvp}{(\Omega, \F, \P, (\F_t)_\t)}
+\newcommand{\ps}{(E, \mathscr{E})}
+\newcommand{\pst}{(\N_0, 2^{\N_0})}
+\newcommand{\xt}{(X_t)_\t}
+\newcommand{\yt}{(Y_t)_\t}
+\newcommand{\nt}{(N_t)_\t}
+\newcommand{\ind}{\perp\!\!\!\perp}
+\newcommand{\bor}{(\R, \B(\R))}
+\newcommand{\ti}{0 \leq t_1 < t_2 < \ldots < t_k}
+
+\newcommand{\B}{\mathscr{B}}
+\newcommand{\EE}{\mathscr{E}}
+\newcommand{\F}{\mathscr{F}}
+
+\theoremstyle{definition}
+\newtheorem{definicija}{Definicija}[section]
+
+\theoremstyle{definition}
+\newtheorem{trditev}{Trditev}[section]
+
+\theoremstyle{definition}
+\newtheorem{izrek}{Izrek}[section]
+
+\theoremstyle{definition}
+\newtheorem{metoda}{Metoda}[section]
+
+\newtheorem*{posledica}{Posledica}
+\newtheorem*{opomba}{Opomba}
+\newtheorem*{komentar}{Komentar}
+\newtheorem{lema}{Lema}
+\newtheorem*{dokaz}{Dokaz}
+\newtheorem*{posplošitev}{Posplošitev}
+\newtheorem*{dogovor}{Dogovor}
+\newtheorem*{sklep}{Sklep}
+\newtheorem*{oznake}{Oznake}
+
+\title{Slučajni procesi 1 - definicije, trditve in izreki}
+\author{Oskar Vavtar \\
+po predavanjih profesorja Janeza Bernika}
+\date{2021/22}
+
+\begin{document}
+\maketitle
+\pagebreak
+\tableofcontents
+\pagebreak
+
+% #################################################################################################
+
+\begin{oznake}
+~
+\begin{itemize}
+	\item $(\Omega, \F, \P)$ verjetnostni prostor
+	\item $\Lambda \neq \emptyset$ indeksna množica
+	\item $(E, \EE)$ prostor stanj
+\end{itemize}
+
+\end{oznake}
+\vspace{0.5cm}
+
+% #################################################################################################
+
+\section{Predavanje, 14.2.}
+\vspace{0.5cm}
+
+\definicija{\textit{Slučajni proces}, parametriziran z $\Lambda$ in prostorom stanj $E$, je nabor slučajnih spremenljivk $(X_\lambda)_{\lambda \in \Lambda}$, kjer je $\Omega \rightarrow E$ $\F$-merljiva slučajna spremenljivka za vsak $\lambda \in \Lambda$.}
+\5
+
+\definicija{\textit{Trajektorija} za $\omega \in \Omega$ je funkcija $t \mapsto X_t(\omega)$, si sliko $[0, \infty) \rightarrow (\R, \B(\R))$ \scriptsize{(oz. $[0,\infty)\ra (E, \EE)$)}.}
+\5
+
+\definicija{Naj bo $(X_t)_\t$ slučajni proces na $\vp$ za vrednostmi v $\ps$. Za vsak nabor $0 \leq t_1 < t_2 < \ldots < t_k$ ima $k$-razsežni slučajni vektor $(X_{t_1}, X_{t_2}, \ldots, X_{t_k})$ skupno porazdelitev. Takim porazdelitvam pravimo \textit{končno razsežne robne porazdelitve}.
+\5
+
+\posledica{Naj bosta $\xt$ in $\yt$ dva različna procesa. Če velja
+$$(X_{t_1}, X_{t_2},\ldots, X_{t_k}) ~\overset{(d)}{=}~ (Y_{t_1}, Y_{t_2}, \ldots, Y_{t_k}),$$
+$\forall 0 \leq t_1 < t_2 < \ldots < t_k$, $\forall k \geq 1$, potem za $\forall A \in \F_{\infty}$ in $\forall \tilde{A} \in \tilde{\F}_\infty$ \scriptsize{($\tilde{\F}_\infty:= \sigma\set{\yt}$)}}, ki sta določeni ``na enak način'', potem
+$$\P(A) ~=~ \P(\tilde{A}).$$
+Rečemo $\xt \overset{(d)}{=} \yt$. Če za enak nabor $t_i$ velja
+$$(X_{t_1}, X_{t_2},\ldots, X_{t_k}) ~\ind~ (Y_{t_1}, Y_{t_2}, \ldots, Y_{t_k}),$$
+potem $\forall A \in \F_\infty$, $\forall B \in \tilde{\F}_\infty$ velja
+$$\P(A \cap B) ~=~ \P(A)\P(B),$$
+procesa sta \textit{neodvisna}.}
+\5
+
+\definicija{Naj bo $\ps = \bor$, $\ti$:
+$$X_{t_1} - X_{t_0}, ~X_{t_2} - X_{t_1}, ~\ldots~, ~X_{t_k} - X_{t_{k-1}}$$
+so \textit{prirastki}.}
+\5
+
+\definicija{Proces $\xt$ ima \textit{neodvisne prirastke}, če so za vsak nabor $\ti$ slučajne spremenljivke/vektorji $X_{t_1} - X_{t_0}, X_{t_2} - X_{t_1}, \ldots, X_{t_k} - X_{t_{k-1}}$ neodvisni. Prirastki prek neprekrivajočih intervalov takega procesa so neodvisni.}
+\5
+
+\definicija{Proces $\xt$ ima \textit{stacionarne prirastke}, če za vsak $\ti$,  velja
+$$(X_{t_1} - X_{t_0}, \ldots, X_{t_k} - X_{t_{k-1}}) ~\overset{(d)}{=}~ (X_{t_1 + h} - X_{t_0 + h}, \ldots, X_{t_k + h} - X_{t_{k-1} + h}), \quad \forall h \geq 0.$$}
+\5
+
+\definicija{\textit{L\'evyjevi procesi} so slučajni procesi z neodvisnimi, stacionarnimi ter c\`adl\`ag trajektorijami.}
+\5
+
+\definicija{~\begin{itemize}
+	\item $\F_t := \sigma\set{X_s \mid 0 \leq s \leq t}$
+	\item $\fvp$ filtriran verjetnostni prostor
+	\item $T: \Omega \ra [0,\infty]$ je čas ustavljanja, če $\set{T \leq t} \in \F_t$, $\forall \t$
+	\item $\F_T := \set{A \in \F \mid A \cap \set{T \leq t} \in \F_t, \forall t \geq 0}$ $\sigma$-algebra zgodovine časa $T$
+\end{itemize}
+Če je proces c\`adl\`ag, je $T$ merljiva glede na $\F_T$ in $X_T$ na $\set{T < \infty}$ merljiva glede na $\F_T$.
+
+\definicija{\textit{Proces štetja} $\nt$ je slučajni proces s prostorom stanj $\pst \subseteq \bor$, pri katerem so trajektorije $t \mapsto N_t(\omega)$, $t \geq 0$ nepadajoče, zvezne z desne in z vrednostmi v $\N_0$. \scriptsize{Iz same definicije sledi, da je proces c\`adl\`ag}.}
+\5
+
+\definicija{\textit{Zaporedni časi skokov}:
+\begin{itemize}
+	\item $S_1 := \inf\set{t \mid N_t \neq N_0}$ 
+	\item $S_{n+1} := \inf\set{t > S_n \mid N_t \neq N_{S_n}}\1_{\set{S_n \infty}} + \infty\1_{\set{S_n = \infty}}$
+\end{itemize}
+Časi skokov so časi ustavljanja.}
+\5
+
+\definicija{Definiramo \textit{višino $n$-tega skoka} $\Delta(S_n) := N_{S_n} - N_{S_n^-}$, kjer je $N_{S_n^-} := \lim_{s \nearrow S_n} N_s$. Proces štetja je \textit{enostaven}, če je $\Delta(S_n) = 1$, kadarkoli je definirana. V takem primeru velja
+$$N_t ~=~ N_0 + \sum_{n \geq 1} \1_{\set{S_n \leq t}}.$$}
+\5
+
+
+% #################################################################################################
+
+
+\end{document}
