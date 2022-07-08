@@ -8,9 +8,12 @@
 \usepackage{mathrsfs}
 \usepackage{bbm}
 \usepackage{xcolor}
+\usepackage[scr=boondox]{mathalfa}
+\usepackage{yhmath}
 
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
 \renewcommand{\P}{\mathbb{P}}
 \newcommand{\E}{\mathbb{E}}
 \renewcommand{\c}{\mathsf{c}}
@@ -25,16 +28,33 @@
 \newcommand{\fvp}{(\Omega, \F, \P, (\F_t)_\t)}
 \newcommand{\ps}{(E, \mathscr{E})}
 \newcommand{\pst}{(\N_0, 2^{\N_0})}
-\newcommand{\xt}{(X_t)_\t}
-\newcommand{\yt}{(Y_t)_\t}
-\newcommand{\nt}{(N_t)_\t}
 \newcommand{\ind}{\perp\!\!\!\perp}
 \newcommand{\bor}{(\R, \B(\R))}
 \newcommand{\ti}{0 \leq t_1 < t_2 < \ldots < t_k}
 
+\newcommand{\xt}{(X_t)_\t}
+\newcommand{\yt}{(Y_t)_\t}
+\newcommand{\nt}{(N_t)_\t}
+\newcommand{\tns}{(\tilde{N}_s)_{s \geq 0}}
+\newcommand{\tnt}{(\tilde{N}_t)_{t \geq 0}}
+\newcommand{\xn}{(X_n)_{n \geq 0}}
+\newcommand{\yn}{(Y_n)_{n \geq 0}}
+\newcommand{\ft}{(\F_t)_\t}
+
+\newcommand{\ber}{\text{Ber}}
+\newcommand{\hpp}{\text{HPP}}
+\newcommand{\poi}{\text{Pois}}
+\renewcommand{\exp}{\text{Exp}}
+\newcommand{\mult}{\text{Mult}}
+\newcommand{\geom}{\text{Geom}}
+
 \newcommand{\B}{\mathscr{B}}
 \newcommand{\EE}{\mathscr{E}}
 \newcommand{\F}{\mathscr{F}}
+\newcommand{\U}{\mathcal{U}}
+\renewcommand{\o}{\mathscr{o}}
+\renewcommand{\L}{\mathscr{L}}
+\newcommand{\M}{\hat{M}}
 
 \theoremstyle{definition}
 \newtheorem{definicija}{Definicija}[section]
@@ -84,7 +104,7 @@ po predavanjih profesorja Janeza Bernika}
 
 % #################################################################################################
 
-\section{Predavanje, 14.2.}
+\section{Uvod v procese štetja}
 \vspace{0.5cm}
 
 \definicija{\textit{Slučajni proces}, parametriziran z $\Lambda$ in prostorom stanj $E$, je nabor slučajnih spremenljivk $(X_\lambda)_{\lambda \in \Lambda}$, kjer je $\Omega \rightarrow E$ $\F$-merljiva slučajna spremenljivka za vsak $\lambda \in \Lambda$.}
@@ -99,11 +119,11 @@ po predavanjih profesorja Janeza Bernika}
 \posledica{Naj bosta $\xt$ in $\yt$ dva različna procesa. Če velja
 $$(X_{t_1}, X_{t_2},\ldots, X_{t_k}) ~\overset{(d)}{=}~ (Y_{t_1}, Y_{t_2}, \ldots, Y_{t_k}),$$
 $\forall 0 \leq t_1 < t_2 < \ldots < t_k$, $\forall k \geq 1$, potem za $\forall A \in \F_{\infty}$ in $\forall \tilde{A} \in \tilde{\F}_\infty$ \scriptsize{($\tilde{\F}_\infty:= \sigma\set{\yt}$)}}, ki sta določeni ``na enak način'', potem
-$$\P(A) ~=~ \P(\tilde{A}).$$
+$$\P\set{A} ~=~ \P\set{\tilde{A}}.$$
 Rečemo $\xt \overset{(d)}{=} \yt$. Če za enak nabor $t_i$ velja
 $$(X_{t_1}, X_{t_2},\ldots, X_{t_k}) ~\ind~ (Y_{t_1}, Y_{t_2}, \ldots, Y_{t_k}),$$
 potem $\forall A \in \F_\infty$, $\forall B \in \tilde{\F}_\infty$ velja
-$$\P(A \cap B) ~=~ \P(A)\P(B),$$
+$$\P\set{A \cap B} ~=~ \P\set{A}\P\set{B},$$
 procesa sta \textit{neodvisna}.}
 \5
 
@@ -145,8 +165,497 @@ $$(X_{t_1} - X_{t_0}, \ldots, X_{t_k} - X_{t_{k-1}}) ~\overset{(d)}{=}~ (X_{t_1 
 $$N_t ~=~ N_0 + \sum_{n \geq 1} \1_{\set{S_n \leq t}}.$$}
 \5
 
+\pagebreak
 
 % #################################################################################################
 
+\section{Homogeni Poissonov proces  \\
+(Poissonov tok)}
+\5
+
+\definicija{Naj bo $\lambda>0$ dano realno število. \textit{Enostavni proces štetja} $\nt$, za katerega je $N_0=0$, je $\hpp(\lambda)$, če zanj velja ena od naslednjih trditev:
+\begin{enumerate}
+
+\item Proces $\t$ ima neodvisne in stacionarne prirastke in za $\forall \t$ je
+$$N_t ~\overset{(d)}{=}~ \poi(\lambda t).$$
+Če to velja, potem:
+\begin{itemize}
+	\item $N_{t+s} - N_t \overset{(d)}{=} N_s - \underbrace{N_0}_{=~0} = N_s \overset{(d)}{=} \poi(\lambda s)$
+	\item za ``porazdelitev proces'' potrebujemo (načeloma) pokazati
+	\begin{align*}
+	(N_{t_0}, N_{t_1},\ldots,N_{t_k}) ~&\overset{(d)}{=}~ (N_{t_0}, N_{t_0} + (N_{t_1} - N_{t_0}),\ldots,N_{t_0} + (N_{t_1} - N_{t_0}) + (N_{t_k} - N_{t_{k-1}}) \\
+	&=~ \varphi(N_{t_0}, N_{t_1} - N_{t_0}, \ldots, N_{t_k} - N_{t_{k-1}})
+	\end{align*}
+\end{itemize}
+
+\item \textit{Infinetzimalna karakterizacija}: proces $\nt$ ima neodvisne in stacionarne prirastke in velja
+\begin{align*}
+\P\set{N_t = 1} ~&=~ \lambda t + \o(t) \\
+\P\set{N_t \geq 2} ~&=~ \o(t),
+\end{align*}
+kjer je $\o(t) \in \set{g(t) \mid \lim_{t \searrow 0} \frac{g(t)}{t} = 0}$.
+
+\item \textit{Lastnost medprihodnih časov}: zaporedni časi skokov $S_n$ so končni s.g., t.j. $\P\set{S_n < \infty} = 1 ~\forall n$. $S_0 = 0$. Potem je zaporedje \textit{medprihodnih časov}
+$$T_i ~:=~ S_i - S_{i-1}, ~i \geq 1,$$
+dobro definirano in porazdeljeno kot zaporedje n.e.p. $\exp(\lambda)$ slučajnih spremenljivk. Ta pogoj nam da tudi eksistenco $\hpp(\lambda)$. $\vp$, $(E_i)_{i \geq 1}$ n.e.p. s $\exp(\lambda)$, $W_n := \sum_{i=1}^n E_i$. Potem je
+$$N_t ~:=~ \sum_{k \geq 1} \1_{\set{W_k \leq t}}$$
+$\hpp(\lambda)$.
+
+\item \textit{Lastnost vrstilnih statistik}: za $\forall\t$ je $N_t \overset{(d)}{=} \poi(\lambda t)$ in pogojno na $\set{N_t = k}, k \geq 1$, je vektor
+$$(S_1,\ldots,S_n) \mid \set{N_t = k} ~\overset{(d)}{=}~ (U_{(1)},\ldots,U_{(k)}),$$
+kjer je $(U_{(1)},\ldots,U_{(k)})$ vektor vrstilnih statistik za vektor $(U_1,\ldots,U_k)$ z n.e.p. $\U([0,t])$ porazdeljenimi komponentami.
+
+\end{enumerate}}
+\5
+
+\trditev[Zakon redkih dogodkov; osnovna verzija]{Naj bo $\yn$ zaporedje slučajnih $Y_n \overset{(d)}{=} \ber(n,p_n)$ in obstaja $\lim_{n \rightarrow \infty} n\, p_n = c > 0$. Potem
+$$Y_n ~\xrightarrow{(d)}~ \poi(c).$$}
+\5
+
+\lema[Lema Slutskega]{Naj bosta $\xn$ in $\yn$ taka, da \hbox{$X_n \xrightarrow{(d)} X$} in $Y_n \xrightarrow{\P} c \in \R$. Potem velja 
+$$X_n + Y_n \xrightarrow{(d)} X + c.$$}
+
+\lema{Dana so števila $\lambda_1,\ldots,\lambda_n>0$, $\lambda := \sum_{i=1}^n \lambda_i$, $p_i := \frac{\lambda_i}{\lambda}$. Za nabor $Z_1,\ldots,Z_n$, slučajne spremenljivke z vrednostmi v $\N_0$ sta ekvivalentni trditvi:
+\begin{enumerate}
+	\item $Z_1,\ldots,Z_n$ so neodvisne in $Z_i \overset{(d)}{=} \poi(\lambda_i)$
+	\item $Z := Z_1 + \ldots + Z_n \overset{(d)}{=} \poi(\lambda)$ in, pogojno na $\set{Z=k}$, $k \geq 1$, je slučajni vektor $(Z_1,\ldots,Z_n)$ porazdeljen z $\mult(k; p_1,\ldots,p_n)$, tj.
+	$$\P\set{Z_1 = j_1,\ldots,Z_n = j_n \mid Z=k} ~=~ \frac{k!}{j_1! \cdot \ldots \cdot j_n!}p_1^{j_1}\cdot\ldots\cdot p_n^{j_n},$$
+	kjer $j_1 + \ldots + j_n = k$.
+\end{enumerate}}
+\5
+
+\opomba{V literaturi bomo pogosto zasledili naslednjo definicijo $\hpp(\lambda)$:
+$$(\triangle) \begin{cases}
+N_0 = 0 ~ \text{s.g.} \\
+\text{prirastki neodvisni, stacionarni in}~N_t \overset{(d)}{=} \poi(\lambda t), ~\forall t \geq 0
+\end{cases}$$
+Ta definicija želi $N_0 = 0$ le do s.g.-enakosti in ne zahteva, da je proces štetja enostaven. Da se zlahka videti, da je proces, ki zadošča $(\triangle)$, skoraj gotovo enostaven.}
+\5
+
+\trditev[Enostavna lastnost Markova za HPP]{Naj bo $\nt$ $\hpp(\lambda)$. Za $t>0$ definiramo
+$$\tilde{N}_s ~:=~ N_{t+s} - N_t, \quad s \geq 0.$$
+$\tns$ je tudi $\hpp(\lambda)$ in neodvisna od $\F_t = \sigma\oklepaj{\set{N_u \mid 0 \leq u \leq t}}$.}
+\5
+
+\posledica{~\begin{itemize}
+	\item $S_2 \mid \set{N_t=1}\overset{(d)}{=} t + \exp(\lambda)$
+	\item $S_{N_t+1} \overset{(d)}{=} t + \exp(\lambda)$ 
+	\item $\E[S_{N_t+1}] = t + \frac{1}{\lambda}$
+\end{itemize}
+\5
+
+\trditev[Krepka lastnost Markova za HPP]{Naj bo $\nt$ $\hpp(\lambda)$, $\ft$ naravna filtracija in $T$ čas ustavljanja za $\ft$. Na $\set{T < \infty}$ definiramo 
+$$\tilde{N}_s ~:=~ N_{T+s} - N_T.$$ 
+Potem je $\tns$, pogojno na $\set{T < \infty}$, $\hpp(\lambda)$ in neodvisen od
+$$\F_T ~=~ \set{A \in \F_\infty \mid A \cap \set{T \leq t} \in \F_t, ~\forall \t}.$$
+\5
+
+\posledica{Na dogodku $\set{S_1<\infty}$ je $(N_{S_1+t}-N_{S_1})_\t$ $\hpp(\lambda)$ in neodvisen od $\F_{S_1}$.}
+\5
+
+\definicija[Starost in presežek]{Za $\t$ definiramo
+\begin{itemize}
+	\item presežek (excess): $E_t = S_{N_t+1}-t$
+	\item starost (age): $A_t = t - S_{N_t}$, ki je merljiva glede na $\F_t$
+\end{itemize}
+\5
+
+\trditev[Enostavna lastnost Markova za $(E_t)_\t$ in $(A_t)_\t$]{$E_t \overset{(d)}{=} \exp(\lambda)$ in neodvisen od $\F_t$ (torej tudi od $A_t$). Za $U,V$ neodvisni $\exp(\lambda)$-porazdeljeni slučajni spremenljivki je $(E_t, A_t) \overset{(d)}{=} (U, V \wedge t)$. Če definiramo $L_t$, dolžino medprihodnega časa, ki zaobjema čas $t$, velja
+\begin{align*}
+L_t ~&=~ S_{N_t+1} - S_t \\
+&=~ A_t + E_t
+\end{align*} 
+Za $L_t$ velja \textit{paradoks medprihodnega časa}:
+$$\lim_{t \ra \infty} \E[L_t] ~=~ \frac{2}{\lambda},$$
+medtem ko je upanje dolžin drugih medprihodnih časov $\frac{1}{\lambda}$.}
+\5
+
+\subsection*{Markiranje $\hpp(\lambda)$}
+\5
+
+\definicija[Markiranje HPP]{Naj bo $\nt$ $\hpp(\lambda)$, $(S_i)_{i \geq 1}$ zaporedje prihodov ter $(X_n)_{n \geq 1}$ zaporedje n.e.p. ($d$-razsežnih) slučajnih vektorjev, neodvisno od $\nt$. Zaporedju $(S_i, X_i)_{i \geq 1}$ pravimo \textit{markiranje} $\hpp(\lambda)$ z zaporedjem oznak (markacij) $(X_n)_{n \geq 1}$. Za $i \in \N$ je $(S_i, X_i) \in [0,\infty) \times \R^d$.}
+\5
+
+\oznake{~
+\begin{itemize}
+
+\item $\mu$ ... skupni zakon $(X_n)_{n \geq 1}$ na $\R^d$
+\begin{itemize}
+	\item $\mu$ je mera na $(\R^d, \B(\R^d))$
+	\item $X: \Omega \ra \R^d$
+	\item $B \in \B(\R^d)$: $\mu(B) = \P\set{X \in B}$
+\end{itemize}
+\item $\nu$ ... produktna mera na $\oklepaj{[0,\infty)\times\R^d, \B\oklepaj{[0,\infty)\times\R^d}}$, kjer je 1. faktor $\lambda$-večkratnik Lebesgueove mere na $\oklepaj{[0,\infty), \B\oklepaj{[0,\infty)}}$, 2. faktor pa $\mu$ na $(\R^d, \B(\R^d))$:
+$$\nu(ds, dx) ~=~ \lambda\1_{\set{s>0}}ds \otimes d\mu(x),$$
+tj. za produktno množico oblike $A = [a,b]\times C$, $0 \leq a \leq b$, $C \in \B(\R^d)$,
+$$\nu(A) ~=~ \lambda(b-a) \cdot \mu(C).$$
+\end{itemize}}
+\5
+
+\izrek{Naj bodo $A_1,\ldots,A_m \subset [0,\infty) \times \R^d$ Borelovo merljive paroma disjunktne množice, kjer je $\forall i$ $A_i$ omejena v časovni komponentni, tj. $\exists T > 0$ tak, da $A_i \subset [0,T]\times\R^d$, $i \in \set{1,\ldots,m}$. Postavimo
+$$N(A) ~=~ \sum_{i \geq 1} \1_{\set{(S_i,X_i)\in A}}.$$
+Pri teh predpostavkah so komponente $\oklepaj{N(A_1),\ldots,N(A_m)}$ neodvisne, pri čemer je
+$$N(A_i) ~\overset{(d)}{=}~ \poi(\nu(A_i)).$$}
+\5
+
+\trditev[Redčenje $\hpp(\lambda)$]{Naj bo $\nt$ $\hpp(\lambda)$ in $(X_i)_{i \geq 1}$ zaporedje $\ber(p)$-porazdeljenih slučajnih spremenljivk, neodvisnih od $\nt$. Postavimo
+\begin{align*}
+N_t^1 ~&=~ \sum_{i \geq 1} \1_{\set{S_i \leq t, X_i=1}}, \\
+N_t^0 ~&=~ \sum_{i \geq 1} \1_{\set{S_i \leq t, X_i=0}}.
+\end{align*}
+Očitno,
+$$N_t^0 + N_t^1 ~=~ N_t, \quad t \geq 0.$$
+Procesa $(N_t^0)_{t \geq 0}$, $(N_t^1)_{t \geq 0}$ sta neodvisna HPP, prvi z intenzivnostjo $\lambda_0 = (1-p)\lambda$, drugi pa z $\lambda_1 = p\lambda$. Tukaj je $\mu = p\delta_{\set{1}} + (1-p)\delta_{\set{0}}$.}
+\5
+
+\trditev[Superpozicija HPP]{Naj bo 
+$$X_i ~:=~ \1_{\set{S_i = S_k^1,~\text{za nek}~k}} ~=~ \sum_{k \geq 1} \1_{\set{S_i = S_k^1}}.$$
+$X_i$ je Bernoullijeva slučajna spremenljivka, ki pokaže 1, če je bil $i$-ti prihod združenega procesa $(N_t)_{t \geq 0}$ prihod, ki je prišel oz. iz $(N_t^1)_{t \geq 0}$. $(X_i)_{i \geq 1}$ ke zaporedje n.e.p. slučajnih spremenljivk, porazdeljenih s $\ber\oklepaj{\frac{\lambda_1}{\lambda_0 + \lambda_1}}$. Še več, to zaporedje je neodvisno od $\nt$.}
+
+\pagebreak
+
+% #################################################################################################
+
+\section{Nehomogeni Poissonov proces}
+\5
+
+\definicija[Sprememba ure]{Naj bo $R: [0,\infty)\ra [0,\infty)$ nepadajoča funkcija, c\`adl\`ag (zaradi enostavnosti lahko predpostavimo $\R(x) = 0$, $x<0$) in $\tnt$ homogen Poissonov proces na $\vp$ z intenzivnostjo $1$. Definirajmo
+$$N_t ~=~ \tilde{N}_{R(t)}, \quad t \geq 0.$$
+Zlahka se prepričamo, da velja:
+\begin{itemize}
+	\item proces $\nt$ ima neodvisne prirastke,
+	\item za $0 \leq s < t$ je $N_t - N_s \overset{(d)}{=} \poi\oklepaj{R(t)-R(s)}$.
+\end{itemize}
+Procesu $\nt$ rečemo nehomogen Poissonov proces z intenzivnostno mero $\mu$, kjer je $\mu$ $\sigma$-končna mera na $\oklepaj{\R^+, \B(\R^+)}$, ki jo porodi $R$ s predpisom
+$$\mu\oklepaj{[0,a]} ~=~ R(a), \quad a \geq 0.$$}
+\5
+
+\definicija[Nehomogen Poissonov proces]{Naj bo $\mu$ mera na $\oklepaj{\R^+, \B(\R^+)}$, kjer $\mu\oklepaj{[0,a]}<\infty$ za vse $a \geq 0$. Definirajmo $R(t) = \mu\oklepaj{[0,t]}$, $t\geq 0$, ki je nepadajoča funkcija, zvezna z desne. Procesu štetja $\nt$, ki ima neodvisne prirastke in za katerega velja, da je za poljubno $0\leq s<t$
+$$N_t - N_s ~\overset{(d)}{=}~ \poi\oklepaj{\mu\oklepaj{(s,t]}} ~=~ \poi\oklepaj{R(t)-R(s)}$$
+rečemo \textit{nehomogeni Poissonov proces} z intenzivnostno mero $\mu$.}
+\5
+
+\definicija[Trenutna intenzivnost]{Naj bo $\mu$ absolutno zvezna glede na Lebesgueovo mero, $\mu \ll \L$. Po Radon-Nikodymovem izreku, $\frac{d\mu(s)}{d\L(s)} = \rho(s)$, kjer je $\rho \in L_{\text{loc}}^1\oklepaj{\R^+,\L}$ lokalno integrabilna\footnote{absolutno integrabilna na vsakem končnem intervalu}. Očitno je $\rho \geq 0$ s.p. V tem primeru je
+$$R(t) ~=~ \int_0^t \rho(s)\,ds$$
+in za $0 \leq u < v$ je
+$$N_v - N_u ~\overset{(d)}{=}~ \poi\oklepaj{\int_u^v \rho(s)\,ds}.$$
+V posebnem primeru, ko je $\rho(t) = \lambda>0$ in $R(t) = \lambda t$ na privede nazaj do $\hpp(\lambda)$.}
+\5
+
+\trditev[Nehomogena lastnost Markova]{Naj bo $\F_t := \sigma\oklepaj{\set{N_s \mid 0 \leq s \leq t}}$, $\t$, naravna filtracija za $\nt$ z intenzivnostjo $\mu$. Proces $\oklepaj{N_{t+s}-N_t}_{s\geq 0}$ je neodvisen od $\F_t$ in je nehomogen Poissonov proces, z intezivnostno mero, porojeno z 
+$$R(s) ~=~ R(t+s) - R(t) ~=~ \mu\oklepaj{(0,s]}, \quad s \geq 0.$$ 
+Če je $\frac{dR}{dt} = \rho(t)$ trenutna intenzivnost za $\nt$, je za $\oklepaj{N_{t+s}-N_t}_{s\geq 0}$ trenutna intenzivnost $\rho_1(s) = \rho(t+s)$, $s\geq 0$.}
+\5
+
+\trditev[Krepka nehomogena lastnost Markova]{Naj bo $T$ čas ustavljanja glede na naravno filtracijo $\ft$, je na dogodku $\set{T<\infty}$ proces $\oklepaj{N_{T+s}-N_T}_{s\geq 0}$, pogojno na $\set{T<\infty}$ in $\ft$, nehomogen Poissonov proces z intenzivnostno funkcijo,
+\begin{align*}
+R_1(s) ~&=~ R(T+s), \\
+\rho_1(s) ~&=~ \rho(T+s), \quad s \geq 0,
+\end{align*}
+če $\rho$ obstaja.}
+\5
+
+\trditev{Lastnost vrstilnih  statistik]{Naj bo $\nt$ nehomogen Poissonov proces, $R(t)$, $0\leq s \leq t$ taka, da je $R(t)-R(s)>0$. Potem je 
+$$\oklepaj{S_{N_s+1},\ldots,S_{N_s+k}} \mid \set{N_t-N_s=k} ~\overset{(d)}{=}~ \oklepaj{Y_{(1)},\ldots,Y_{(k)}}.$$
+V posebnem, če obstaja trenutna intenzivnost $\rho$, imajo $Y_1,\ldots,Y_k$ gostoto
+$$\frac{\rho(u)}{R(t)-R(s)}\1_{(s,t]}(u).$$}
+\5 
+\pagebreak
+\komentar{~\begin{itemize}
+\item Pogojna porazdelitev za $\oklepaj{S_{N_s+1},\ldots,S_{N_s+k}}$ in $\oklepaj{Y_{(1)},\ldots,Y_{(k)}}$ se ujemata na družini
+$$\mathcal{U} ~=~ \set{(s_1,t_1]\times\ldots\times(s_k,t_k] \mid s<s_1\leq t_1 < \ldots <s_k\leq t_k \leq t}.$$
+$\mathcal{U}$ je zaprta za neskončne preseke in generira Borelovo $\sigma$-algebro
+$$\mathcal{V} ~=~ \set{(x_1,\ldots,x_k) \mid s<x_1\leq\ldots\leq x_k \leq t}.$$
+Če je $\mathcal{U}$ $\pi$-sistem, po Dynkinovem $\pi$-$\lambda$ izreku sledi
+$$\oklepaj{S_{N_s+1},\ldots,S_{N_s+k}} ~\overset{(d)}{=}~ \oklepaj{Y_{(1)},\ldots,Y_{(k)}}.$$ 
+\item $\mu$ je Radonova mera na $\oklepaj{[0,\infty),\B\oklepaj{[0,\infty)}}$ $\iff$ $R: [0,\infty) \ra [0,\infty)$ je nepadajoča in zvezna z desne.
+\end{itemize}}
+\5
+
+\trditev[Infinetzimalna karakterizacija\footnote{za primer, ko je $\rho$ zvezna}]{Imamo proces štetja $\nt$, ki ima neodvisne prirastke, skoke velikosti 1 in zvezno nenegativno funkcijo $\rho: [0,\infty) \ra [0,\infty)$,
+\begin{itemize}
+	\item $\P\set{N_{t+h}-N_t=1} = \rho(t)h + \o_t^1(h)$,
+	\item $\P\set{N_{t+h}-N_t \geq 2} = \o_t^2(h)$,
+\end{itemize}
+pri čemer je $\lim_{h \searrow 0} \frac{\o_t^i(h)}{h} = 0$, $i \in \set{1,2}$, enakomerno za $t \in [0,T]$, $\forall T \geq 0$. Potem je za $\forall s<t$
+$$N_t - N_s ~\overset{(d)}{=} \poi\oklepaj{R(t)-R(s)} ~=~ \poi\oklepaj{\int_s^t \rho(u)\,du}.$$}
+\5
+
+\izrek{Naj bo $\nt$ nehomogen Poissonov proces na $\vp$ z intenzivnostno mero $\mu$. Denimo, da je $R(t) = \mu\oklepaj{[0,t]}$ strogo naraščajoča zvezna funkcija in $R(0)=0$. Potem na morda razširjenem\footnote{v zapiskih piše na istem???} verjetnostnem prostoru $(\tilde{\Omega}, \tilde{\F}, \tilde{\P})$ obstaja homogen Poissonov proces $\tnt$ z intenzivnostjo $1$, da velja
+$$N_t ~=~ \tilde{N}_{R(t)}, \quad \t.$$}
+\5
+
+\pagebreak
+
+% #################################################################################################
+
+\section{Prenovitveni procesi}
+\5
+
+\definicija[Prenovitveni proces]{Naj bo $(T_i)_{t \geq 1}$ zaporedje neodvisnih in enako porazdeljenih slučajnih spremenljivk, $T_i \sim F$. Predpostavke so:
+\begin{itemize}
+	\item $F(0) = \P\set{T_i=0} < 1$ ($T_i$ niso s.g. enake 0),
+	\item $\mu = \E[T_i] = \int_{[0,\infty)} x\,dF(x) \leq \infty$ označuje pričakovan medprihodni čas, pri čemer dopuščamo $\mu = \infty$. Velja pa tudi $\mu > 0$.
+\end{itemize}
+Definiramo zaporedne čase prihodov oz. prenovitvene trenutno
+\begin{align*}
+S_0 ~&=~ 0, \\
+S_k ~&=~ \sum_{i=1}^k T_i, \quad k \geq 1.
+\end{align*}
+Potem je \textit{prenovitveni proces} $\nt$ definiran z
+$$N_t ~=~ \sum_{k\geq 1} \1_{\set{S_k \leq t}} ~=~ \sup\set{k \mid S_k \leq t}.$$}
+\5
+
+\komentar{Za porazdelitev $N_0$ velja
+\begin{align*}
+\P\set{N_0 = k} ~&=~ \P\set{S_k = 0, S_{k+1}>0} \\
+&=~ \P\set{T_1 = 0,\ldots,T_k = 0, T_{k+1}>0} \\
+&=~ F(0)^k(1-F(0))
+\end{align*}
+Torej $N_0 \overset{(d)}{=} \geom\oklepaj{1-F(0)}-1$ in $\P\set{N_0 = 0} = 1$.}
+\5
+
+\trditev[Lastnosti]{~\begin{itemize}
+	\item Proces $\nt$ je nepadajoč in zvezen z desne. Verjetnost eksplozije je enaka $0$.
+	\item $\P\set{N_t = \infty} = \P\set{S_k \leq t, \forall k \geq 1} = 0$ za vsak $\t$.
+	\item $S_k \leq t$ le za končno mnogo $k$ s.g.
+	\item Na $\set{t \geq S_k}$ je $N_t \geq k$.
+	\item Ker je s.g. $S_k < \infty$ za vsak $k$, je torej $\lim_{t \rightarrow \infty} N_t = \infty$ s.g.
+\end{itemize}
+Vidimo, da na dogodku z verjetnosto $1$ proces $\nt$ zadošča zahtevam procesa štetja.}
+\5
+
+\definicija{Slučajn spremenljivka $T$ je \textit{aritmetična}, če $\exists a > 0$ tak, da
+$$\P\set{T \in \Z a} ~=~ 1,$$
+torej $T$ s.g. pokaže le večkratnike števila $a$.}
+\5
+
+\definicija[Prenovitvena mera]{Na bo $\nt$ prenovitveni proces. Za $\t$ definiramo \textit{prenovitveno mero}
+$$M(t) ~=~ \E[N_t].$$
+Za $t<0$ lahko postavimo $M(t) = 0$.}
+\5
+
+\definicija[$k$-ta konvolucija]{Za porazdelitveno funkcijo $F$, kjer $T_i \sim F$, definiramo $k$-to konvolucijo kot
+$$F^{k*}(x) ~=~ \P\set{S_k \leq x} ~=~ \P\set{T_1 + \ldots + T_k \leq x}.$$
+V posebnem je $F^{0*} = \1_{[0,\infty)}(x)$ Heavisideova funkcija, tore je porazdelitev s.g. enaka konstanti $0$. Ker je $S_{k+1} = S_k + T_{k+1}$ velja rekurzivna zveza
+$$F^{(k+1)*}(x) ~=~ \int_\R F^{k*}(x-s)\,dF(s) ~=~ F^{k*} * F.$$}
+\5
+
+\komentar{Izkaže se, da za neodvisni slučajni spremenljivki $U\sim F$ in $V\sim G$ velja
+$$U+V ~\sim~ F*G,$$
+kjer 
+$$F*G(t) ~=~ \begin{cases}
+0\,; ~&t<0, \\
+\int_{[0,t]} F(t-s)\,dG(s) = \int_{[0,t]}G(t-s)\,dF(s)\,; ~& \t. 
+\end{cases}$$}
+\5
+
+\trditev{Vsaka nepadajoča, zvezna iz desne funkcija $H: \R \rightarrow \R$ porodi mero oz. zakon $\mu$ na $\bor$ s predpisom
+$$\mu\oklepaj{(a,b]} ~=~ H(b) - H(a) ~=~ \int_{(a,b]}dH(x),$$
+ki ga lahko enolično razširimo na celotno Borelovo $\sigma$-algebro.}
+\5
+
+\trditev[Lastnosti]{Za prenovitveni proces $\nt$ z medprihodno porazdelitvijo $F$ velja naslednje.
+\begin{itemize}
+	\item Za vsak $\t$ in $r \geq 0$ je $\E[N_t^r]<\infty$. V posebnem je $M(t)$ dobro definirana.
+	\item Velja 
+	$$M(t) ~=~ \sum_{k=1}^\infty F^{k*}(t).$$
+	Pri tem je $M(t)$ nepadajoča in zvezna z desne. Velja še \hbox{$\lim_{t\ra\infty} M(t) = \infty$.}
+	\item Za Laplace-Stieltjesevo transformacijo $\M(s)$ prenovitvene mere $M$ velja
+	$$\M(s) ~=~ \int_{[0,\infty)} e^{-sx}\,dM(x) ~=~ \frac{\hat{F}(s)}{1-\hat{F}(s)}, \quad s \geq 0,$$
+	pri čemer je $\hat{F}(s) = \int_{[0,\infty)} e^{-sx}\,dF(x) = \E[e^{-sT}]$ Laplace-Stieltjesova transformacija porazdelitvene funkcije $F$ oz. Laplaceova transformacija slučajne spremenljivke $T$.
+\end{itemize}}
+\5
+
+\izrek[Elementarni prenovitveni izrek]{Za prenovitveno mero $M$ velja
+$$\lim_{t\ra\infty} \frac{M(t)}{t} ~=~ \frac{1}{\mu} ~=~ \frac{1}{\E[T]} \in [0,\infty).$$}
+\5
+\pagebreak
+\trditev[Asimptotske lastnosti]{~\begin{itemize}
+	\item KZVŠ:
+	$$\lim_{t\ra\infty} \frac{N_t}{t} = \frac{1}{\mu} \quad \text{s.g.}$$
+	\item CLI: pod pogojem $\sigma^2 = \text{Var}[T]<\infty$ velja
+	$$\frac{N_t - \frac{t}{\mu}}{\sigma\sqrt{\frac{t}{\mu^3}}} ~\xrightarrow{(d)}~ \mathcal{N}(0,1).$$
+\end{itemize}}
+\5
+
+\definicija[Prenovitev z zaostankom]{Naj bo zaporedje medprihodnih časov $(T_i)_\t$ zaporedje neodvisnih nenegativnih slučajnih spremenljivk, pri čemer
+\begin{itemize}
+	\item $T_1 \sim G$,
+	\item $T_2,T_3,\ldots \sim F$, 
+\end{itemize}
+kjer $\mu = \E[T_2] = \int_{[0,\infty)} x\,dF(x)$, $F(0) = \P\set{T_2 = 0} <1$. Kot prej naj bo (za $\t$) 
+\begin{align*}
+S_k ~&=~ \sum_{i=1}^k T_i, \\
+N_t ~&=~ \sum_{k \geq 1} \1_{\set{S_k \leq t}}, \\
+M(t) ~&=~ \E[N_t].
+\end{align*}}
+\5
+
+\trditev[Lastnosti]{~\begin{itemize}
+	\item Proces $\nt$ ima s.g. nepadajoče, z desne zvezne trajektorije, nima eksplozije in $\lim_{t\ra\infty} N_t = \infty$.
+	\item $\E[N_t^r]<\infty$, $\forall \set{t,r}\subset\R_0^+$. V posebnem je $M(t)$ dobro definirana, z desne zvezna funkcija.
+	\item Velja
+	$$M(t) ~=~ \sum_{k\geq 0} G*F^{k*}(t) ~=~ \sum_{k\geq 1} G*F^{(k-1)*}(t),$$
+	kjer je
+	$$G*F^{k*}(t) ~=~ \int_{[0,t]} G(t-s)\,dF^{k*}(s), \quad k \geq 0, t\geq 0.$$
+	\item $\hat{M}(s) = \frac{\hat{G}(s)}{1-\hat{F}(s)}$
+	\item $\lim_{t\ra\infty} \frac{M(t)}{t} = \frac{1}{\mu} = \frac{1}{\E[T_2]}$
+	\item $\lim_{t\ra\infty} \frac{N_t}{t} = \frac{1}{\mu}$ s.g.
+\end{itemize}
+Zadnji dve lastnosti pomenita, da na dolgi rok vpliv drugačne porazdelitve $T_1$ izzveni.}
+\5
+
+\trditev{Naj bo $\nt$ prenovitveni proces z zaostankom (ali brez). Za $\t$ definiramo
+$$\tilde{N}_s ~:=~ N_{t+s} - N_t, \quad s\geq 0.$$
+Potem je $\tns$ prenovitveni proces z zaostankom $\tilde{T}_1 = S_{N_t+1}-t$. $\tilde{T}_1, \tilde{T}_2,\ldots$ so neodvisni od $\tilde{T}_1$, enako porazdeljene kot $T_2$.}
+\5
+
+\definicija[Porazdelitev integriranega repa]{Naj bo $\nt$ prenovitveni proces z zamikom tak, da
+$$\mu ~=~ \E[T_2] ~=~ \int_{[0,\infty)} x\,dF(x) < \infty.$$ \textit{Porazdelitev integriranega repa} $G_*$ za $F$ je potem podana z
+$$G_*(x) ~=~ \frac{1}{\mu} \int_0^x \oklepaj{1-F(u)}\,du\1_{[0,\infty)}(x).$$}
+\5
+
+\komentar{$G_*(0) = 0$, $\lim_{x\ra\infty} G_*(x) = 1$}
+\5
+
+\trditev{Naj bodo $T_2,T_3,\ldots \sim F$, $\mu<\infty$ in $T_1 \sim G_*$. Potem velja
+$$M(t) ~=~ \E[N_t] ~=~ \frac{t}{\mu}.$$}
+\5
+
+\definicija[Stacionarnost]{Za proces štetka $\nt$ rečemo, da je stacionaren, če za vsak $\t$ velja
+$$(N_{t+s}-N_t)_{s\geq 0} ~\overset{(d)}{=}~ (N_s)_{s\geq 0},$$
+t.j., da statistične ne moremo ugotoviti, ali spremljamo proces od začetka, ali pa šele od nekega časa $t$ naprej.}
+\5
+
+\trditev{Za prenovitveni proces z zaostankom $\nt$ vela, da je stacionaren natanko tedaj, ko je $\mu = \E[T_2]<\infty$ in ima $T_1$ porazdelitev integriranega repa glede na $T_2$.}
+\5
+
+\izrek[Blackwellov prenovitveni izrek]{Naj bo $\nt$ prenovitveni proces z medprihodno porazdelitvijo $F$, ki ni aritmetičn, $M(t) = \E[N_t]$, $\mu = \E[T] = \int_{[0,\infty)} x\,dF(x) \leq \infty$. Potem velja
+$$\lim_{t\ra\infty} \oklepaj{M(t+h)-M(t)} ~=~ \frac{h}{\mu}, \quad h \geq 0.$$}
+\5
+
+\opomba{Zgornji izrek velja tudi v primeru, ko je medprihodna porazdelitev aritmetična, a v tem primeru le za take $h$, ki so večkratniki razpona $F$.}
+\5
+
+\pagebreak
+
+% #################################################################################################
+
+\section{Prenovitvene enačbe}
+\5
+
+\definicija[Prenovitvena enačba]{Naj bo $h: [0,\infty) \ra \R$ merljiva, lokalno omejena funkcija in $F$ porazdelitvena funkcija nenegativne slučajne spremenljivke $T$, ki ni s.g. enaka $0$, t.j. $F(0)<1$. Iščemo funkcio $g$, ki je konstantna $0$ na $(-\infty, 0)$ in $g(t-\boldsymbol{\cdot}) \in L^1(dF)$ $\forall \t$, in za katero velja
+$$g(t) ~=~ h(t) + \int_{[0,t]} g(t-s)\,dF(s), \quad \t,$$
+oz. na krajše
+$$g ~=~ h + g*F.$$
+Taki enačbi pravimo $(h,F)$-prenovitvena enačba.}
+\5
+
+\trditev{Prenovitvena mera $M(t)$ prenovitvenega procesa z medprihodno porazdelitvijo $F$ zadošča $(F,F)$-prenovitveni enačbi
+$$M ~=~ F + M*F.$$}
+\5
+
+\trditev{Prenovitvena mera $M(t)$ prenovitvenega procesa z zaostankom, kjer $T_1 \sim G$, $T_2,T_3,\ldots \sim F$, zadošča $(G,F)$-prenovitveni enačbi
+$$M ~=~ G + M*F.$$}
+\5
+
+\posledica{~\begin{itemize}
+	\item $M = G + M*F$ sledi
+	\begin{align*}
+	\hat{M} ~&=~ \hat{G} + \widehat{M*F} \\
+	&=~ \hat{G} + \hat{M}\cdot\hat{F} ~\Longrightarrow~ \hat{M} = \frac{\hat{G}}{1-\hat{F}}.
+	\end{align*}
+\end{itemize}}
+\5
+
+\definicija[Porazdelitev starosti in presežka]{Naj bosta $A_t = t-S_{N_t}$ startost in $E_t = S_{N_t+1}-t$ presežek prenovitvenega procesa $\nt$ z medprehodno porazdelitvijo $F$ ob času $t$. Definiramo
+\begin{align*}
+a_x(t) ~&=~ \P\set{A_t \leq x}, \\
+e_x(t) ~&=~ \P\set{E_t \leq x}.
+\end{align*}
+Pri fiksnem $t$ sta to točno porazdelitveni funkciji starosti in preseška, lahko pa ju gledamo tudi kot funkciji $t$ pri fiksnem $x$. V tem primeru dobimo prenovitveni enačbi
+\begin{align*}
+a_x(t) ~&=~ (1-F(t))\1_{\set{t\leq x}} + \int_{[0,t]} a_x(t-s)\,dF(s), \\
+e_x(t) ~&=~ F(t+x) - F(t) + \int_{[0,t]} e_x(t-s)\,dF(s).
+\end{align*}
+Funkcija $a_x(t)$ torej reši $\oklepaj{(1-F)\1_{\set{t\leq x}}, F}$-prenovitveno enačbo, $e_x(t)$ pa $\oklepaj{F(\boldsymbol{\cdot}+x)-F(\boldsymbol{\cdot}), F}$-prenovitveno enačbo.}
+\5
+
+\izrek[Obstoj in enoličnost rešitev prenovitvenih enačb]{Naj bo $h:[0,\infty)\ra\R$ merljiva, lokalno omejena funkcija, $h(x) = 0$ na $(-\infty,0)$, in $F$ porazdelitvena funkcija nenegativne slučajne spremenljivke $T$, ki ni s.g. enaka $0$, t.j. $F(0)<1$. Potem obstaja ena sama merljiva in lokalno omejena funkcija $g$, $g(x) = 0$ na $(-\infty,0)$, ki reši $(h,F)$-prenovitveno enačbo $g = h+ g*F$ in sicer je
+$$g = h + h*M$$
+oz.
+\begin{align*}
+g(t) ~&=~ h(t) + \int_{[0,t]} h(t-s)\,dM(s) \\
+&=~ h(t) \sum_{k\geq 1} \int_{[0,t]} h(t-s)\,dF^{k*}(s),
+\end{align*}
+kjer je $M(t) = \sum_{k\geq 1} F^{k*}(t)$ prenovitvena mera procesa $\nt$ z medprihodno porazdelitvijo $F$.}
+\5
+\pagebreak
+\definicija[Direktni Riemannov integral]{Naj bo $h: [0,\infty)\ra[0,\infty)$ nenegativna merljiva funkcija. Pravimo, da je $h$ \textit{direktno Riemannovo integrabilna} (\textit{d.R.i.}), če zadošča naslednjima pogojema:
+\begin{itemize}
+	\item $\forall \Delta> 0$:
+	$$\sum_{k \geq 0} \oklepaj{\sup_{t\in [k\Delta,(k+1)\Delta)} h(t)} ~<~ \infty,$$
+	\item $$\lim_{\Delta\searrow 0} \Delta\sum_{k \geq 0} \oklepaj{\sup_{t\in [k\Delta,(k+1)\Delta)} h(t)} ~=~ \lim_{\Delta\searrow 0} \Delta \sum_{k \geq 0} \oklepaj{\inf_{t\in [k\Delta,(k+1)\Delta)} h(t)}.$$
+\end{itemize}
+Če $h$ zadošča navedenima zahtevama, potem je limita v drugi zahtevi točno vrednost direktnega Riemannovega integrala $\int_0^\infty h(u)\,du$. Funkcija $h$ poljubnega predznaka je d.R.i., če sta le-taki $h^+ = h \wedge 0$ in $h^- = (-h) \wedge 0$, pri čemer je $\int_0^\infty h(u)\,du = \int_0^\infty h^+(u)\,du + \int_0^\infty h^-(u)\,du$.}
+\5
+
+\trditev[Kriteriji za d.R.i.]{~\begin{itemize}
+	\item Če je nenegativna funkcija $h \geq 0$ d.R.i., potem je $h$ omejena, zvezna s.p. na $[0,\infty)$ in $\lim_{t \rightarrow \infty} h(t) = 0$.
+	\item Če je $h$ merljiva in omejena funkcija na $[0,\infty)$ za katero obstaja $T\geq 0$ tak, da je $h(t) = 0 ~\forall t \geq T$ in je $h$ zvezna s.p. na $[0,\infty)$, potem je $h$ d.R.i.
+	\item Če je $h \geq 0$ nenaraščajoča posplošeno Riemannovo integrabilna funkcija potem je d.R.i. in je njen direktni Riemannov integral enak posplošenemu $\int_0^\infty h(u)\,du$.
+	\item Če velja $0 \leq h \leq H$, kjer je $H$ d.R.i., $h$ pa merljiva in zvezna skoraj povsod, potem je $h$ d.R.i.
+\end{itemize}}
+\5
+
+\izrek[Smithov ključni prenovitveni izrek]{Naj bo $h: [0,\infty) \ra \R$ d.R.i. funkcija in $F$ porazdelitvena funkcija nearitmetične nenegativne slučajne spremenljivke $T$. Potem za edino merljivo, lokalno omejeno funkcijo $g$, ki reši enačbp $g = h + g*F$ velja
+$$\lim_{t\ra\infty} g(t) ~=~ \frac{1}{\mu} \int_0^\infty h(u)\,du,$$
+kjer je $\mu = \int_{[0,\infty)} x\,dF(x) = \E[T] \in (0,\infty]$.}
+\5
+
+\trditev[Asimptotična porazdelitev starosti in presežka]{Naj bo $\nt$ prenovitveni proces in $A_t, E_t$ starost in presežek s porazdelitvenima funkcijama $a_x(t), e_x(t)$. Smithov izrek nam pove
+\begin{align*}
+\lim_{t\ra\infty} \P\set{A_t \leq x} ~&=~ \lim_{t\ra\infty} a_x(t) \\
+&=~ \frac{\int_0^\infty \oklepaj{1-F(u)}\1_{[0,x]}(u)\,du}{\mu} \\
+&=~ \frac{\int_0^x \oklepaj{1-F(u)}\,du}{\mu}
+\end{align*}
+in 
+\begin{align*}
+\lim_{t\ra\infty} \P\set{E_t \leq x} ~&=~ \lim_{t\ra\infty} e_x(t) \\
+&=~ \frac{\int_0^\infty \oklepaj{1-F(u)}\,du - \int_x^\infty \oklepaj{1-F(u)}\,du}{\mu} \\
+&=~ \frac{\int_0^x \oklepaj{1-F(u)}\,du}{\mu}.
+\end{align*}
+Za $\mu < \infty$ torej v obeh primerih dobimo, da je asimptotična porazdelitev enaka porazdelitvi integriranega repa.}
+\5
+
+\definicija[Prenovitev z defektom]{Naj bo $(T_i)_{i \geq 1}$ zaporedje neodvisnih nenegativnih, $F$-porazdeljenih slučajnih spremenljivk. Pravimo, da so te defektne, če velja
+$$\P\set{T=\infty} = 1 - \P\set{T<\infty} ~=~ 1 - F(\infty) ~>~ 0.$$
+Da se izognemo trivialnosti, lahko predpostavimo še $F(\infty) > 0$. Za porazdelitev $N_\infty = \lim_{t\ra\infty} N_t$ velja
+\begin{align*}
+\P\set{N_\infty = k} ~&=~ \P\set{S_k < \infty, S_{k+1} = \infty} \\
+&=~ \P\set{T_1<\infty,\ldots,T_k<\infty,T_{k+1}=\infty} \\
+&=~ F(\infty)^k\oklepaj{1-F(\infty)},
+\end{align*}
+torej $N_\infty \overset{(d)}{=} \geom\oklepaj{1-F(\infty)}-1$, torej je neizrojena. Velja tudi
+$$\lim_{t\ra\infty} \E[N_t] ~=~ \lim_{t\ra\infty} M(t) ~=~ \frac{F(\infty)}{1-F(\infty)}.$$}
+\5
+
+\komentar{V praksi imamo najpogosteje prenovitveno enačbo oblike
+$$g ~=~ h + \gamma g * F,$$
+kjer je $F$ porazdelitvena funkcija neizrojene nenegativne slučajne spremenljivke ($F(\infty) = 1$) in $\gamma \in (0,1)$.} 
+\5
+
+\izrek[Obstoj in enoličnost rešitev]{Naj bo $h: [0,\infty) \ra \R$ merljiva in lokalno omejena, $h(x) = 0$ na $(-\infty,0)$. Potem obstaja natanko ena merljiva in lokalno omejena funkcija $g$, $g(x) = 0$ na $(-\infty,0)$, ki reši prenovitveno enačbo z defektom $g = h + g*F$. Dana je z
+$$g ~=~ h + h*M$$
+oz.
+$$g(t) ~=~ h(t) + \int_{[0,\infty]} h(t-s)\,dM(s), \quad t \geq 0.$$}
+\5
+
+\trditev[Asimptotika rešitev]{Naj bo $h: [0,\infty) \ra \R$ merljiva in lokalno omejena, $h(x) = 0$ na $(-\infty,0)$ in naj obstaja $h(\infty) = \lim_{t\ra\infty} h(t)$. Če je $h(\infty) \in \overline{R}$ (iz česar sledi omejenost $h$), potem za edino lokalno omejeno merljivo rešitev $(h,F)$-prenovitvene enačbe z defektom $g$ velja
+$$\lim_{t\ra\infty} g(t) ~=~ \frac{h(\infty)}{1-F(\infty)}.$$}
+\5
+
+% #################################################################################################
 
 \end{document}
